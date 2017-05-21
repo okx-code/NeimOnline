@@ -1,3 +1,5 @@
+package me.okx.neimonline;
+
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
