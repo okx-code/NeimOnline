@@ -1,0 +1,15 @@
+group 'me.okx'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile group: 'org.unbescape', name: 'unbescape', version: '1.0'
+}
