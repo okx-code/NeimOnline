@@ -34,8 +34,10 @@ public class FrontendHandler implements HttpHandler {
                 "      } else {\n" +
                 "        fullInput = \"&input=\" + input;\n" +
                 "      }\n" +
-                "    \n" +
+                "      var start = Date.now()\n" +
                 "      $.get(\"/api/neim?code=\" + code + fullInput, function( data ) {\n" +
+                "        var end = Date.now()\n" +
+                "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");" +
                 "        $(\".output\").val(data);\n" +
                 "      });\n" +
                 "  });\n" +
@@ -57,7 +59,8 @@ public class FrontendHandler implements HttpHandler {
                 "<button type=\"button\" class=\"link\">Permalink</button>\n" +
                 "<br/>\n" +
                 "<span>Output:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea>\n" +
+                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea><br/>\n" +
+                "<span class=\"timer\"></span>" +
                 "</body>\n" +
                 "</html>";
 
