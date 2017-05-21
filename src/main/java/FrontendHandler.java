@@ -42,7 +42,7 @@ public class FrontendHandler implements HttpHandler {
                 "  $(\".link\").click(function() {\n" +
                 "    var code = encodeURIComponent($(\".code\").val());\n" +
                 "    var input =  encodeURIComponent($(\".input\").val());\n" +
-                "    var text = window.location.hostname + \":81\" + window.location.pathname + \"?code=\" + code + \"&input=\" + input;\n" +
+                "    var text = \"http://\" + window.location.hostname + \":81\" + window.location.pathname + \"?code=\" + code + \"&input=\" + input;\n" +
                 "    //window.location.href = text;\n" +
                 "    window.prompt(\"Copy to clipboard: Ctrl+C, Enter\", text);\n" +
                 "  });\n" +
