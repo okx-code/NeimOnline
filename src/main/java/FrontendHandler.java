@@ -50,14 +50,14 @@ public class FrontendHandler implements HttpHandler {
                 "</script>\n" +
                 "<body>\n" +
                 "<span>Code:</span><br>\n" +
-                "<textarea cols=30 rows=10 class=\"code\">" + HtmlEscape.escapeHtml5(code) + "</textarea><br>\n" +
+                "<textarea cols=32 rows=8 class=\"code\">" + HtmlEscape.escapeHtml5(code) + "</textarea><br>\n" +
                 "<span>Input:</span><br>\n" +
-                "<textarea cols=30 rows=10 class=\"input\">" + HtmlEscape.escapeHtml5(input) + "</textarea><br>\n" +
+                "<textarea cols=32 rows=8 class=\"input\">" + HtmlEscape.escapeHtml5(input) + "</textarea><br>\n" +
                 "<button type=\"button\" class=\"submit\">Submit</button>\n" +
                 "<button type=\"button\" class=\"link\">Permalink</button>\n" +
                 "<br/>\n" +
                 "<span>Output:</span><br>\n" +
-                "<textarea cols=30 rows=10 class=\"output\" readonly></textarea>\n" +
+                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea>\n" +
                 "</body>\n" +
                 "</html>";
 
