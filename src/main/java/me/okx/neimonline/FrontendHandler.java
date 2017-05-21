@@ -37,10 +37,13 @@ public class FrontendHandler implements HttpHandler {
                 "        fullInput = \"&input=\" + input;\n" +
                 "      }\n" +
                 "      var start = Date.now()\n" +
+                "      var output = $(\".output\");" +
+                "      output.css(\"cursor\", \"progress\");" +
                 "      $.get(\"/api/neim?code=\" + code + fullInput, function( data ) {\n" +
                 "        var end = Date.now()\n" +
                 "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");" +
-                "        $(\".output\").val(data);\n" +
+                "        output.val(data);" +
+                "        output.css(\"cursor\", \"auto\");\n" +
                 "      });\n" +
                 "  });\n" +
                 "  $(\".link\").click(function() {\n" +
