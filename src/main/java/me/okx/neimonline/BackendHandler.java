@@ -9,25 +9,51 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BackendHandler implements HttpHandler {
 
     @Override
-    public void handle(HttpExchange ex) throws IOException {
-        String html = handleQuery(ex.getRequestURI().getRawQuery());
-        int header;
+    public void handle(HttpExchange ex) {
+        Thread thread = new Thread(() -> {
+            try {
+                String html = handleQuery(ex.getRequestURI().getRawQuery());
+                int header;
 
-        if(html == null) {
-            html = "400 Bad Request";
-            header = 400;
-        } else {
-            header = 200;
-        }
+                if (html == null) {
+                    html = "400 Bad Request";
+                    header = 400;
+                } else {
+                    header = 200;
+                }
 
-        ex.sendResponseHeaders(header, html.length());
-        OutputStream os = ex.getResponseBody();
-        os.write(html.getBytes());
-        os.close();
+                ex.sendResponseHeaders(header, html.length());
+                OutputStream os = ex.getResponseBody();
+                os.write(html.getBytes());
+                os.close();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(thread.isAlive()) {
+                    try {
+                        thread.interrupt();
+                        String html = "Timed out";
+                        ex.sendResponseHeaders(200, html.length());
+                        OutputStream os = ex.getResponseBody();
+                        os.write(html.getBytes());
+                        os.close();
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, 10000);
     }
 
     public String handleQuery(String query) {
