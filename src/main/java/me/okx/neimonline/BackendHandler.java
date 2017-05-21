@@ -80,8 +80,7 @@ public class BackendHandler implements HttpHandler {
         try {
             InputStream is = new ByteArrayInputStream( input.getBytes("UTF-8") );
 
-            InputUtil.setInputStream(is);
-            InputUtil.clearInputs();
+            tm.getInput().setInputStream(is);
 
             System.out.println("Code: " + code);
             System.out.println("Input: " + input);
