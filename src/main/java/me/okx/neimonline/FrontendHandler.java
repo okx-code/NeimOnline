@@ -2,7 +2,6 @@ package me.okx.neimonline;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.unbescape.html.HtmlEscape;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,54 +19,7 @@ public class FrontendHandler implements HttpHandler {
         String code = params.getOrDefault("code", "");
         String input = params.getOrDefault("input", "");
 
-        String html = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>\n" +
-                "<script>\n" +
-                "$( document ).ready(function() {\n" +
-                "  $(\".submit\").click(function() {\n" +
-                "      var button = $(this);\n" +
-                "      var code = encodeURIComponent($(\".code\").val());\n" +
-                "      var input =  encodeURIComponent($(\".input\").val());\n" +
-                "      var fullInput;\n" +
-                "      if(input == \"\") {\n" +
-                "        fullInput = \"\";\n" +
-                "      } else {\n" +
-                "        fullInput = \"&input=\" + input;\n" +
-                "      }\n" +
-                "      var start = Date.now()\n" +
-                "      var output = $(\".output\");" +
-                "      output.css(\"cursor\", \"progress\");" +
-                "      $.get(\"/api/neim?code=\" + code + fullInput, function( data ) {\n" +
-                "        var end = Date.now()\n" +
-                "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");" +
-                "        output.val(data);" +
-                "        output.css(\"cursor\", \"auto\");\n" +
-                "      });\n" +
-                "  });\n" +
-                "  $(\".link\").click(function() {\n" +
-                "    var code = encodeURIComponent($(\".code\").val());\n" +
-                "    var input =  encodeURIComponent($(\".input\").val());\n" +
-                "    var text = \"http://\" + window.location.hostname + \":" + Main.PORT + "\" + window.location.pathname + \"?code=\" + code + \"&input=\" + input;\n" +
-                "    //window.location.href = text;\n" +
-                "    window.prompt(\"Copy to clipboard: Ctrl+C, Enter\", text);\n" +
-                "  });\n" +
-                "});\n" +
-                "</script>\n" +
-                "<body>\n" +
-                "<span>Code:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"code\">" + HtmlEscape.escapeHtml5(code) + "</textarea><br>\n" +
-                "<span>Input:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"input\">" + HtmlEscape.escapeHtml5(input) + "</textarea><br>\n" +
-                "<button type=\"button\" class=\"submit\">Submit</button>\n" +
-                "<button type=\"button\" class=\"link\">Permalink</button>\n" +
-                "<br/>\n" +
-                "<span>Output:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea><br/>\n" +
-                "<span class=\"timer\"></span>" +
-                "</body>\n" +
-                "</html>";
+        String html = "<!DOCTYPE html><html><head><script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script><script>$( document ).ready(function(){$(\".submit\").click(function(){var button=$(this); var code=encodeURIComponent($(\".code\").val()); var input=encodeURIComponent($(\".input\").val()); var fullInput; if(input==\"\"){fullInput=\"\";}else{fullInput=\"&input=\" + input;}var start=Date.now() var output=$(\".output\"); output.css(\"cursor\", \"progress\"); $.get(\"/api/neim?code=\" + code + fullInput, function( data ){var end=Date.now() $(\".timer\").html(\"Took \" + (end-start) + \"ms.\"); output.val(data); output.css(\"cursor\", \"auto\");});}); $(\".link\").click(function(){var code=encodeURIComponent($(\".code\").val()); var input=encodeURIComponent($(\".input\").val()); var text=\"http://\" + window.location.hostname + \":80\" + window.location.pathname + \"?code=\" + code + \"&input=\" + input; //window.location.href=text; window.prompt(\"Copy to clipboard: Ctrl+C, Enter\", text);});});</script><body><span>Code:</span><br><textarea cols=32 rows=8 class=\"code\"></textarea><br><span>Input:</span><br><textarea cols=32 rows=8 class=\"input\"></textarea><br><button type=\"button\" class=\"submit\">Submit</button><button type=\"button\" class=\"link\">Permalink</button><br/><span>Output:</span><br><textarea cols=32 rows=8 class=\"output\" readonly></textarea><br/><span class=\"timer\"></span></body></html>";
 
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
