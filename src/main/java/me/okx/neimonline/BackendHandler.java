@@ -71,7 +71,7 @@ public class BackendHandler implements HttpHandler {
             System.out.println("[BACKEND] [WARNING] Input is empty");
         }
 
-        //input += "\n\0";
+        //input += "\n";
 
         TokenManager tm = new TokenManager();
         tm.registerTokens(100);

@@ -52,7 +52,7 @@ public class FrontendHandler implements HttpHandler {
                 "      if(request != undefined) {\n" +
                 "        request.abort();\n" +
                 "      }\n" +
-                "      request = $.get(req + code + fullInput, function( data ) {\n" +
+                "      request = $.get(req, function( data ) {\n" +
                 "        var end = Date.now()\n" +
                 "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");\n" +
                 "        output.val(data);\n" +

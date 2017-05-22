@@ -5,7 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.net.InetSocketAddress;
 
 public class Main {
-    public static int PORT = 81;
+    public static int PORT = 80;
 
     public static void main(String[] args) throws Exception {
 
