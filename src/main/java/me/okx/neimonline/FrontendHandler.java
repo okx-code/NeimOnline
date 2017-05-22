@@ -20,7 +20,72 @@ public class FrontendHandler implements HttpHandler {
         String code = HtmlEscape.escapeHtml5(params.getOrDefault("code", ""));
         String input = HtmlEscape.escapeHtml5(params.getOrDefault("input", ""));
 
-        String html = "<!DOCTYPE html><script src=https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js></script><script>$(document).ready(function(){$(\".submit\").click(function(){$(this);var o,n=encodeURIComponent($(\".code\").val()),t=encodeURIComponent($(\".input\").val());o=\"\"==t?\"\":\"&input=\"+t;var e=Date.now(),c=$(\".output\");c.css(\"cursor\",\"progress\"),$.get(\"/api/neim?code=\"+n+o,function(o){var n=Date.now();$(\".timer\").html(\"Took \"+(n-e)+\"ms.\"),c.val(o),c.css(\"cursor\",\"auto\")})}),$(\".link\").click(function(){var o,n=encodeURIComponent($(\".code\").val()),t=encodeURIComponent($(\".input\").val());o=\"\"==t?\"\":\"&input=\"+t;var e=\"http://\"+window.location.hostname+\":80\"+window.location.pathname+\"?code=\"+n+o;window.prompt(\"Copy to clipboard: Ctrl+C, Enter\",e)})})</script><span>Code:</span><br><textarea class=code cols=32 rows=8>"+code+"</textarea><br><span>Input:</span><br><textarea class=input cols=32 rows=8>"+input+"</textarea><br><button class=submit type=button>Submit</button> <button class=link type=button>Permalink</button><br><span>Output:</span><br><textarea class=output cols=32 rows=8 readonly></textarea><br><span class=timer></span>";
+        String html = "\n" +
+                "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>\n" +
+                "<script>\n" +
+                "var request;\n" +
+                "$( document ).ready(function() {\n" +
+                "  $(\".submit\").click(function() {\n" +
+                "      var button = $(this);\n" +
+                "      var code = encodeURIComponent($(\".code\").val());\n" +
+                "      var input =  encodeURIComponent($(\".input\").val());\n" +
+                "      var fullInput;\n" +
+                "      var req = \"/api/neim\";\n" +
+                "      var params = false;\n" +
+                "      if(input != \"\") {\n" +
+                "        params = true;\n" +
+                "        req += \"?input=\" + input;\n" +
+                "      } if(code != \"\") {\n" +
+                "        if(params) {\n" +
+                "          req += \"&\";\n" +
+                "        } else {\n" +
+                "          req += \"?\";\n" +
+                "        }\n" +
+                "        req += \"code=\" + code;\n" +
+                "      }\n" +
+                "      var start = Date.now()\n" +
+                "      var output = $(\".output\");\n" +
+                "      output.css(\"cursor\", \"progress\");\n" +
+                "      if(request != undefined) {\n" +
+                "        request.abort();\n" +
+                "      }\n" +
+                "      request = $.get(req + code + fullInput, function( data ) {\n" +
+                "        var end = Date.now()\n" +
+                "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");\n" +
+                "        output.val(data);\n" +
+                "        output.css(\"cursor\", \"auto\");\n" +
+                "      });\n" +
+                "  });\n" +
+                "  $(\".link\").click(function() {\n" +
+                "    var code = encodeURIComponent($(\".code\").val());\n" +
+                "    var input =  encodeURIComponent($(\".input\").val());\n" +
+                "    var fullInput;\n" +
+                "      if(input == \"\") {\n" +
+                "        fullInput = \"\";\n" +
+                "      } else {\n" +
+                "        fullInput = \"&input=\" + input;\n" +
+                "      }\n" +
+                "    var text = \"http://\" + window.location.hostname + \":80\" + window.location.pathname + \"?code=\" + code + fullInput;\n" +
+                "    //window.location.href = text;\n" +
+                "    window.prompt(\"Copy to clipboard: Ctrl+C, Enter\", text);\n" +
+                "  });\n" +
+                "});\n" +
+                "</script>\n" +
+                "<body>\n" +
+                "<span>Code:</span><br>\n" +
+                "<textarea cols=32 rows=8 class=\"code\">"+code+"</textarea><br>\n" +
+                "<span>Input:</span><br>\n" +
+                "<textarea cols=32 rows=8 class=\"input\">"+input+"</textarea><br>\n" +
+                "<button type=\"button\" class=\"submit\">Submit</button>\n" +
+                "<button type=\"button\" class=\"link\">Permalink</button>\n" +
+                "<br/>\n" +
+                "<span>Output:</span><br>\n" +
+                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea><br/>\n" +
+                "<span class=\"timer\"></span></body>\n" +
+                "</html>";
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
         os.write(html.getBytes());
