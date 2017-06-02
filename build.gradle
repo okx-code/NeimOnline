@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile fileTree(include: ['*.jar'], dir: 'lib')
     compile group: 'org.unbescape', name: 'unbescape', version: '1.0'
 }

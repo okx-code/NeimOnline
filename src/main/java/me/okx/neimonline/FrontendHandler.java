@@ -2,15 +2,14 @@ package me.okx.neimonline;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.commons.io.IOUtils;
 import org.unbescape.html.HtmlEscape;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,12 +22,9 @@ public class FrontendHandler implements HttpHandler {
         String code = HtmlEscape.escapeHtml5(params.getOrDefault("code", ""));
         String input = HtmlEscape.escapeHtml5(params.getOrDefault("input", ""));
 
-        String html = null;
-        try {
-            html = new String(Files.readAllBytes(Paths.get(getClass().getResource("/neim.html").toURI())));
-        } catch (URISyntaxException e) {
-            html = "Error";
-        }
+        InputStream in = getClass().getResourceAsStream("/neim.html");
+        String html = IOUtils.toString(in, "UTF-8");
+        
         html = String.format(html, code.length(), code, input);
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
