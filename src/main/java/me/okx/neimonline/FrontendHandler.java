@@ -24,8 +24,8 @@ public class FrontendHandler implements HttpHandler {
 
         InputStream in = getClass().getResourceAsStream("/neim.html");
         String html = IOUtils.toString(in, "UTF-8");
-        
-        html = String.format(html, code.length(), code, input);
+
+        html = String.format(html, code, input);
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
         os.write(html.getBytes());
