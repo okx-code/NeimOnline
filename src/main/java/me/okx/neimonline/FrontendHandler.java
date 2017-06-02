@@ -7,7 +7,10 @@ import org.unbescape.html.HtmlEscape;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,72 +23,13 @@ public class FrontendHandler implements HttpHandler {
         String code = HtmlEscape.escapeHtml5(params.getOrDefault("code", ""));
         String input = HtmlEscape.escapeHtml5(params.getOrDefault("input", ""));
 
-        String html = "\n" +
-                "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>\n" +
-                "<script>\n" +
-                "var request;\n" +
-                "$( document ).ready(function() {\n" +
-                "  $(\".submit\").click(function() {\n" +
-                "      var button = $(this);\n" +
-                "      var code = encodeURIComponent($(\".code\").val());\n" +
-                "      var input =  encodeURIComponent($(\".input\").val());\n" +
-                "      var fullInput;\n" +
-                "      var req = \"/api/neim\";\n" +
-                "      var params = false;\n" +
-                "      if(input != \"\") {\n" +
-                "        params = true;\n" +
-                "        req += \"?input=\" + input;\n" +
-                "      } if(code != \"\") {\n" +
-                "        if(params) {\n" +
-                "          req += \"&\";\n" +
-                "        } else {\n" +
-                "          req += \"?\";\n" +
-                "        }\n" +
-                "        req += \"code=\" + code;\n" +
-                "      }\n" +
-                "      var start = Date.now()\n" +
-                "      var output = $(\".output\");\n" +
-                "      output.css(\"cursor\", \"progress\");\n" +
-                "      if(request != undefined) {\n" +
-                "        request.abort();\n" +
-                "      }\n" +
-                "      request = $.get(req, function( data ) {\n" +
-                "        var end = Date.now()\n" +
-                "        $(\".timer\").html(\"Took \" + (end-start) + \"ms.\");\n" +
-                "        output.val(data);\n" +
-                "        output.css(\"cursor\", \"auto\");\n" +
-                "      });\n" +
-                "  });\n" +
-                "  $(\".link\").click(function() {\n" +
-                "    var code = encodeURIComponent($(\".code\").val());\n" +
-                "    var input =  encodeURIComponent($(\".input\").val());\n" +
-                "    var fullInput;\n" +
-                "      if(input == \"\") {\n" +
-                "        fullInput = \"\";\n" +
-                "      } else {\n" +
-                "        fullInput = \"&input=\" + input;\n" +
-                "      }\n" +
-                "    var text = \"http://\" + window.location.hostname + \":80\" + window.location.pathname + \"?code=\" + code + fullInput;\n" +
-                "    //window.location.href = text;\n" +
-                "    window.prompt(\"Copy to clipboard: Ctrl+C, Enter\", text);\n" +
-                "  });\n" +
-                "});\n" +
-                "</script>\n" +
-                "<body>\n" +
-                "<span>Code:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"code\">"+code+"</textarea><br>\n" +
-                "<span>Input:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"input\">"+input+"</textarea><br>\n" +
-                "<button type=\"button\" class=\"submit\">Submit</button>\n" +
-                "<button type=\"button\" class=\"link\">Permalink</button>\n" +
-                "<br/>\n" +
-                "<span>Output:</span><br>\n" +
-                "<textarea cols=32 rows=8 class=\"output\" readonly></textarea><br/>\n" +
-                "<span class=\"timer\"></span></body>\n" +
-                "</html>";
+        String html = null;
+        try {
+            html = new String(Files.readAllBytes(Paths.get(getClass().getResource("/neim.html").toURI())));
+        } catch (URISyntaxException e) {
+            html = "Error";
+        }
+        html = String.format(html, code.length(), code, input);
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
         os.write(html.getBytes());

@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+var request;
+$( document ).ready(function() {
+  $(".code").bind("input propertychange", function() {
+    var bytes = $(".code").val().length;
+    var word = "bytes";
+    if(bytes === 1) {
+      word = "byte";
+    }
+    $(".bytes").html("(" + bytes + " " + word + ")");
+  });
+  $(".submit").click(function() {
+      var button = $(this);
+      var code = encodeURIComponent($(".code").val());
+      var input =  encodeURIComponent($(".input").val());
+      var fullInput;
+      var req = "/api/neim";
+      var params = false;
+      if(input != "") {
+        params = true;
+        req += "?input=" + input;
+      } if(code != "") {
+        if(params) {
+          req += "&";
+        } else {
+          req += "?";
+        }
+        req += "code=" + code;
+      }
+      var start = Date.now()
+      var output = $(".output");
+      output.css("cursor", "progress");
+      if(request != undefined) {
+        request.abort();
+      }
+      request = $.get(req + code + fullInput, function( data ) {
+        var end = Date.now()
+        $(".timer").html("Took " + (end-start) + "ms.");
+        output.val(data);
+        output.css("cursor", "auto");
+      });
+  });
+  $(".link").click(function() {
+    var code = encodeURIComponent($(".code").val());
+    var input =  encodeURIComponent($(".input").val());
+    var fullInput;
+      if(input == "") {
+        fullInput = "";
+      } else {
+        fullInput = "&input=" + input;
+      }
+    var text = "http://" + window.location.hostname + ":80" + window.location.pathname + "?code=" + code + fullInput;
+    //window.location.href = text;
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+  });
+});
+</script>
+<body>
+<span>Code </span><span class="bytes">(%s bytes)</span><span>:</span><br>
+<textarea cols=32 rows=8 class="code">%s</textarea><br>
+<span>Input:</span><br>
+<textarea cols=32 rows=8 class="input">%s</textarea><br>
+<button type="button" class="submit">Submit</button>
+<button type="button" class="link">Permalink</button>
+<br/>
+<span>Output:</span><br>
+<textarea cols=32 rows=8 class="output" readonly></textarea><br/>
+<span class="timer"></span></body>
+</html>
