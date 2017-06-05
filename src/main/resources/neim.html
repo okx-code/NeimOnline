@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +29,7 @@ $( document ).ready(function() {
         if(params) {
           req += "&";
         } else {
+          params = true;
           req += "?";
         }
         req += "code=" + code;
@@ -40,7 +40,14 @@ $( document ).ready(function() {
       if(request != undefined) {
         request.abort();
       }
-      request = $.get(req + code + fullInput, function( data ) {
+      if(!params) {
+        req += "?";
+      } else {
+        req += "&";
+      }
+      req += "n=" + $(".n").is(":checked");
+      req += "&v=" + $(".v").is(":checked");
+      request = $.get(req, function( data ) {
         var end = Date.now()
         $(".timer").html("Took " + (end-start) + "ms.");
         output.val(data);
@@ -51,11 +58,11 @@ $( document ).ready(function() {
     var code = encodeURIComponent($(".code").val());
     var input =  encodeURIComponent($(".input").val());
     var fullInput;
-      if(input == "") {
-        fullInput = "";
-      } else {
-        fullInput = "&input=" + input;
-      }
+    if(input == "") {
+      fullInput = "";
+    } else {
+      fullInput = "&input=" + input;
+    }
     var text = "http://" + window.location.hostname + ":80" + window.location.pathname + "?code=" + code + fullInput;
     //window.location.href = text;
     window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
@@ -90,12 +97,17 @@ $( document ).ready(function() {
 </script>
 <body>
 <span>Code </span><span class="bytes"></span><span>:</span><br>
-<textarea cols=32 rows=8 class="code">%s</textarea><br>
+<textarea cols=32 rows=8 class="code">%s</textarea>
+<br><br>
 <span>Input:</span><br>
 <textarea cols=32 rows=8 class="input">%s</textarea><br>
+<br>
+<input type="checkbox" class="n">Apply <code>-n</code> flag (print stack newline-separated)<br>
+<input type="checkbox" class="v">Apply <code>-v</code> flag (print all variables)
+<br><br>
 <button type="button" class="submit">Submit</button>
 <button type="button" class="link">Permalink</button>
-<br/>
+<br><br>
 <span>Output:</span><br>
 <textarea cols=32 rows=8 class="output" readonly></textarea><br/>
 <span class="timer"></span></body>

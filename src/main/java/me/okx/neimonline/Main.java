@@ -15,6 +15,6 @@ public class Main {
         server.start();
         System.out.println("[MAIN] Server started.");
 
-        System.out.println(new BackendHandler().handleQuery("input=6666666&code=\uD835\uDC25\uD835\uDC08Γ6Θℝ)₁>\uD835\uDD54"));
+        System.out.println(new BackendHandler().handleQuery("n=false&v=false&input=6666666&code=\uD835\uDC25\uD835\uDC08Γ6Θℝ)₁>\uD835\uDD54"));
     }
 }

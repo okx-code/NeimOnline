@@ -27,7 +27,7 @@ public class BackendHandler implements HttpHandler {
                     header = 200;
                 }
 
-                ex.sendResponseHeaders(header, html.length());
+                ex.sendResponseHeaders(header, html.getBytes().length);
                 OutputStream os = ex.getResponseBody();
                 os.write(html.getBytes());
                 os.close();
@@ -83,6 +83,13 @@ public class BackendHandler implements HttpHandler {
 
             System.out.println("Code: " + code);
             System.out.println("Input: " + input);
+
+            if(vals.get("n").equals("true")) {
+                tm.setSeparator("\n");
+            } else if(vals.get("v").equals("true")) {
+                System.out.println("[BACKEND] Fired " + tm.outputVars());
+                return tm.outputVars();
+            }
 
             tm.handleTokens(code);
 

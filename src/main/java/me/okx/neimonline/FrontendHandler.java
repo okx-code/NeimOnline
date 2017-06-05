@@ -17,10 +17,12 @@ public class FrontendHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange ex) throws IOException {
-        Map<String, String> params = getParams(ex.getRequestURI().getQuery());
+        Map<String, String> params = getParams(ex.getRequestURI().getRawQuery());
 
         String code = HtmlEscape.escapeHtml5(params.getOrDefault("code", ""));
         String input = HtmlEscape.escapeHtml5(params.getOrDefault("input", ""));
+
+        System.out.println("CODE: " + code);
 
         InputStream in = getClass().getResourceAsStream("/neim.html");
         String html = IOUtils.toString(in, "UTF-8");
@@ -38,9 +40,13 @@ public class FrontendHandler implements HttpHandler {
             return vals;
         }
 
+        System.out.println("+ " + query + " +");
+
         for(String a : query.split("&")) {
             String[] args = a.split("=");
             try {
+                System.out.println("A: " + args[1]);
+                System.out.println("D: " + URLDecoder.decode(args[1], "UTF-8"));
                 vals.put(args[0], URLDecoder.decode(args[1], "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 vals.put(args[0], args[1]);
