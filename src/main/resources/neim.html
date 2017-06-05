@@ -57,13 +57,27 @@ $( document ).ready(function() {
   $(".link").click(function() {
     var code = encodeURIComponent($(".code").val());
     var input =  encodeURIComponent($(".input").val());
-    var fullInput;
-    if(input == "") {
-      fullInput = "";
-    } else {
-      fullInput = "&input=" + input;
+    var n = $(".n").is(":checked");
+    var v = $(".v").is(":checked");
+    var params = [];
+    if(code != "") {
+      params.push("code=" + code);
     }
-    var text = "http://" + window.location.hostname + ":80" + window.location.pathname + "?code=" + code + fullInput;
+    if(input != "") {
+       params.push("input=" + input);
+    }
+    if(n) {
+       params.push("n=true");
+    }
+    if(v) {
+      params.push("v=true");
+    }
+    var query = "";
+    if(params.length > 0) {
+      query = "?";
+    }
+    query += params.join("&");
+    var text = "http://" + window.location.hostname + ":80" + window.location.pathname + query;
     //window.location.href = text;
     window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
   });
@@ -102,8 +116,8 @@ $( document ).ready(function() {
 <span>Input:</span><br>
 <textarea cols=32 rows=8 class="input">%s</textarea><br>
 <br>
-<input type="checkbox" class="n">Apply <code>-n</code> flag (print stack newline-separated)<br>
-<input type="checkbox" class="v">Apply <code>-v</code> flag (print all variables)
+<input %s type="checkbox" class="n">Apply <code>-n</code> flag (print stack newline-separated)<br>
+<input %s type="checkbox" class="v">Apply <code>-v</code> flag (print all variables)
 <br><br>
 <button type="button" class="submit">Submit</button>
 <button type="button" class="link">Permalink</button>

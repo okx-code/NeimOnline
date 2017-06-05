@@ -27,11 +27,17 @@ public class FrontendHandler implements HttpHandler {
         InputStream in = getClass().getResourceAsStream("/neim.html");
         String html = IOUtils.toString(in, "UTF-8");
 
-        html = String.format(html, code, input);
+        html = String.format(html, code, input, g("n", params), g("v", params));
         ex.sendResponseHeaders(200, html.length());
         OutputStream os = ex.getResponseBody();
         os.write(html.getBytes());
         os.close();
+    }
+
+    public String g(String param, Map<String, String> params) {
+        String a = params.getOrDefault(param, "false");
+        a = a.equals("true") ? "checked" : "";
+        return a;
     }
 
     private Map<String, String> getParams(String query) {
